@@ -10,7 +10,7 @@ using namespace std;
 class Solution {
 public:
     int myAtoi(string s) {
-        int sign = 1, answer = 0, i = 0;
+        int sign = 1, answer = 0, i;
 
         for (i = 0; i < s.size(); i++) {
             if (s[i] == ' ') {

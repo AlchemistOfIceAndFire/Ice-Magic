@@ -8,8 +8,8 @@
 class Solution {
 public:
     ListNode *addTwoNumbers(ListNode *l1, ListNode *l2) {
-        ListNode *head = new ListNode(-1);
-        ListNode *tail = head;
+        ListNode *guard = new ListNode(-1);
+        ListNode *tail = guard;
         int carry = 0;
         while (l1 || l2) {
             int v1 = l1 ? l1->val : 0;

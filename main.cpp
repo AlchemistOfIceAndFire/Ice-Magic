@@ -9,67 +9,51 @@
 #include <sstream>
 #include <queue>
 #include <unordered_set>
+#include <leetcode/model.cpp>
+#include <math.h>
 
 using namespace std;
 
+int divide(int dividend, int divisor) {
+    long _dividend = long(dividend), _divisor = long(divisor);
+    long sign = (dividend < 0 && divisor > 0) || (dividend > 0 && divisor < 0) ? -1 : 1;
+    _dividend = _dividend < 0 ? -_dividend : _dividend;
+    _divisor = _divisor < 0 ? -_divisor : _divisor;
+    long answer = 0, sum = 0, left = 1, base = _divisor;
 
-/*
- *
- *  12258
- *  1   2   2   5   8
- *  12  2   5   8
- *  12  25  8
- *  1   22  5
- *
- *  dp[1] = 1; 1
- *  dp[12] = 2; 1 2, 12
- *  dp[122] = 3; 1 2 2, 12 2, 1 22
- *  dp[1225] = 5; 1 2 2 5, 1 22 5, 1 2 25, 12 2 5, 12 25.
- *  dp[12258] = 5; 1 2 2 5 8, 1 22 5 8, 1 2 25 8, 12 2 5 8, 12 25 8.
- *
- *  dp[xxx] = dp[xx] + 1/0
- */
-
-
-int translateNum(int num) {
-    stringstream stream;
-    stream << num;
-    string str = stream.str();
-
-    int answer = 1;
-
-    for (int i = 1; i < str.size(); i++) {
-        int add = str[i] - '0' > 5 ? 0 : 1;
-        answer += add;
+    if (_dividend < _divisor) {
+        return 0;
     }
-    return answer;
-}
+    if (_dividend == _divisor) {
+        return sign;
+    }
 
-int nthUglyNumber(int n) {
-    vector<int> factors = {2, 3, 5};
-    unordered_set<long> visited;
-    priority_queue<long, vector<long>, greater<long>> q;
-    q.push(1);
+    while (base >= _divisor && sum < _dividend) {
+        sum = sum + base;
+        answer = answer + left;
+        left = left << 1;
+        base = base << 1;
 
-    for (int i = 1; i < n; i++) {
-        int heap = q.top();
-        q.pop();
-
-        for (int j = 0; j < factors.size(); j++) {
-            long num = heap * factors[j];
-            if (visited.count(num) > 0) {
-                continue;
-            }
-            visited.insert(num);
-            q.push(num);
+        while (left > 0 && sum > _dividend - base) {
+            left = left >> 1;
+            base = base >> 1;
         }
     }
-    return (int)q.top();
+
+    if (sign == 1 && answer * sign > INT32_MAX) {
+        return INT32_MAX;
+    }
+
+    if (sign == -1 && answer * sign < INT32_MIN) {
+        return INT32_MIN;
+    }
+
+    return sign < 0 ? -answer : answer;
 }
 
 int main() {
-    int result = nthUglyNumber(2);
-    cout << result;
+    cout << divide(8, 3) << endl;
+    cout << (1 >> 1) << endl;
 }
 
 
