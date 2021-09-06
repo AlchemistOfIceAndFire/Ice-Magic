@@ -2,6 +2,13 @@
 // Created by huanyan on 2021/8/23.
 //
 
+/*
+ * [2,5,2,1,2], target = 5
+ * sorted:
+ *
+ * [1, 2, 2, 2, 5], target = 5
+ *
+ */
 
 class Solution {
 public:
@@ -18,6 +25,8 @@ public:
             path.push_back(candidates[i]);
             dfs(answer, path, candidates, target - candidates[i], i + 1, n);
             path.pop_back();
+            // each number just can use once in each answer, so if the next number equals prev number, the next number can be used in next recursion,
+            // so to avoid the repeated answer, current recursion iteration jump the same number, just use once, and the other same numbers are used for following recursion
             while (i + 1 < n && candidates[i] == candidates[i + 1]) {
                 i++;
             }

@@ -10,6 +10,7 @@ public:
             return;
         }
 
+        // each number just can be used once in each answer, so each recursion begin at i+1, jump to current number, and the preve number should be ignored by other recursion
         for (int i = begin; i < num; i++) {
             path.push_back(i + 1);
             dfs(i + 1, end, num, answer, path);
