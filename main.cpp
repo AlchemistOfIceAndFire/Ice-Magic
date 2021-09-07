@@ -14,46 +14,37 @@
 
 using namespace std;
 
-int divide(int dividend, int divisor) {
-    long _dividend = long(dividend), _divisor = long(divisor);
-    long sign = (dividend < 0 && divisor > 0) || (dividend > 0 && divisor < 0) ? -1 : 1;
-    _dividend = _dividend < 0 ? -_dividend : _dividend;
-    _divisor = _divisor < 0 ? -_divisor : _divisor;
-    long answer = 0, sum = 0, left = 1, base = _divisor;
+/*
+ *  map<vector<int>> 标记每行的数字
+ *  map<vector<int>> 标记每列的数字
+ *  map<vector<int>> 标记每个3*3是否出现重复数字
+ *  vector<int> [-1, 1, 0, 0] vector<int> [0, 0, -1, 1] 用来执行当前单元格的上下左右查找
+ *  counter 计数当前所处3*3
+ *
+ *
+ */
 
-    if (_dividend < _divisor) {
-        return 0;
-    }
-    if (_dividend == _divisor) {
-        return sign;
-    }
 
-    while (base >= _divisor && sum < _dividend) {
-        sum = sum + base;
-        answer = answer + left;
-        left = left << 1;
-        base = base << 1;
-
-        while (left > 0 && sum > _dividend - base) {
-            left = left >> 1;
-            base = base >> 1;
+string countAndSay(int n) {
+    string answer = "1";
+    for (int i = 1; i < n; i++) {
+        int counter = 1;
+        string temp = "";
+        for (int j = 0; j < answer.size(); j++) {
+            if (j < answer.size() - 1 && answer[j] == answer[j + 1]) {
+                counter++;
+                continue;
+            }
+            temp = temp + to_string(counter) + answer[j];
         }
+        answer = temp;
     }
-
-    if (sign == 1 && answer * sign > INT32_MAX) {
-        return INT32_MAX;
-    }
-
-    if (sign == -1 && answer * sign < INT32_MIN) {
-        return INT32_MIN;
-    }
-
-    return sign < 0 ? -answer : answer;
+    return answer;
 }
 
+
 int main() {
-    cout << divide(8, 3) << endl;
-    cout << (1 >> 1) << endl;
+    cout << countAndSay(4) << endl;
 }
 
 
