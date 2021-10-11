@@ -11,6 +11,7 @@
 #include <unordered_set>
 #include <leetcode/model.cpp>
 #include <math.h>
+#include <stack>
 
 using namespace std;
 
@@ -24,27 +25,27 @@ using namespace std;
  *
  */
 
+int longestValidParentheses(string s) {
+    int answer = 0, counter = 0;
+    vector<char> stack;
 
-string countAndSay(int n) {
-    string answer = "1";
-    for (int i = 1; i < n; i++) {
-        int counter = 1;
-        string temp = "";
-        for (int j = 0; j < answer.size(); j++) {
-            if (j < answer.size() - 1 && answer[j] == answer[j + 1]) {
+    for (int i = 0; i < s.size(); i++) {
+        if (s[i] == ')') {
+            if (!stack.empty()) {
                 counter++;
-                continue;
+                stack.pop_back();
+            } else {
+                stack.clear();
             }
-            temp = temp + to_string(counter) + answer[j];
+            continue;
         }
-        answer = temp;
+        stack.push_back(s[i]);
     }
     return answer;
 }
 
-
 int main() {
-    cout << countAndSay(4) << endl;
+
 }
 
 
