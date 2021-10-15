@@ -16,7 +16,7 @@ public:
                     continue;
                 }
                 // if current number exist in three maps return false
-                int counter = (j / 3) * 3 + (i / 3), num = board[i][j] - '0' - 1;
+                int counter = (i / 3) * 3 + (j / 3), num = board[i][j] - '0' - 1;
 
                 if (row_checker[i][num] != 0) {
                     return false;
