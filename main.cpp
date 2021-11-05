@@ -27,44 +27,39 @@ vector<int> selectNext(int i, int j, int n) {
  * t_column =
  *
  */
-
-void rotate(vector <vector<int>> &matrix) {
-    if (matrix.size() == 0 || matrix.size() != matrix[0].size()) { return; }
-    int nums = matrix.size();
-    // represent level
-    int times = 0;
-    while (times <= (nums >> 1)) {
-        int len = nums - (times << 1);
-        for (int i = 0; i < len - 1; ++i) {
-            int temp = matrix[times][times + i];
-            // 每次替换四个数字，分别在四个不同的边上
-            // 对于第一个数字A，替换他的数字B，column B = row A, row B = n - i
-            matrix[times][times + i] = matrix[times + len - i - 1][times];
-            matrix[times + len - i - 1][times] = matrix[times + len - 1][times + len - i - 1];
-            matrix[times + len - 1][times + len - i - 1] = matrix[times + i][times + len - 1];
-            matrix[times + i][times + len - 1] = temp;
-        }
-        ++times;
+vector<vector<int>> insert(vector<vector<int>> &intervals, vector<int> &newInterval) {
+    if (intervals.size() == 0) {
+        return {newInterval};
     }
+    if (newInterval.size() == 0) {
+        return intervals;
+    }
+
+    vector<vector<int>> answer;
+    bool flag = false;
+    int nl = newInterval[0], nr = newInterval[1];
+    for (int i = 0; i < intervals.size(); i++) {
+        int l = intervals[i][0], r = intervals[i][1];
+        if (l > nr && i == 0) {
+            answer.push_back({nl, nr});
+        } else if (r < nl && i == intervals.size() - 1) {
+            answer.push_back({nl, nr});
+        } else if (r < nl || l > nr) {
+            answer.push_back({l, r});
+        } else {
+            if (!flag) {
+                answer.push_back({nl, nr});
+                flag = true;
+            }
+            answer.back()[0] = min(answer.back()[0], l);
+            answer.back()[1] = max(answer.back()[1], r);
+        }
+    }
+    return answer;
 }
 
 int main() {
-    vector<vector<int>> matrix = {
-            {1,  2,  3,  4},
-            {5,  6,  7,  8},
-            {9,  10, 11, 12},
-            {13, 14, 15, 16},
-//            {1, 2, 3},
-//            {4, 5, 6},
-//            {7, 8, 9},
-    };
-    rotate(matrix);
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            cout << matrix[i][j] << " ";
-        }
-        cout << endl;
-    }
+
 }
 
 
