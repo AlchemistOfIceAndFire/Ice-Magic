@@ -69,7 +69,7 @@ public:
         STATE = START;
 
         for (int i = 0; i < s.size(); i++) {
-            STATE = states[STATE][translate_state(s[i])];
+            STATE = states[STATE][(s[i])];
             switch (STATE) {
                 case START:
                     break;

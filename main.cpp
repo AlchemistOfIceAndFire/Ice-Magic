@@ -18,48 +18,60 @@
 
 using namespace std;
 
-vector<int> selectNext(int i, int j, int n) {
-    return {j, n - 1 - i};
+string blank(int n) {
+    return string(n, ' ');
 }
 
-/*
- * t_row = n-1-row;
- * t_column =
- *
- */
-vector<vector<int>> insert(vector<vector<int>> &intervals, vector<int> &newInterval) {
-    if (intervals.size() == 0) {
-        return {newInterval};
+string join(vector<string> &words, int left, int right, string blanks) {
+    string s = words[left];
+    for (int i = left + 1; i < right; i++) {
+        s += blanks + words[left];
     }
-    if (newInterval.size() == 0) {
-        return intervals;
-    }
+    return s;
+}
 
-    vector<vector<int>> answer;
-    bool flag = false;
-    int nl = newInterval[0], nr = newInterval[1];
-    for (int i = 0; i < intervals.size(); i++) {
-        int l = intervals[i][0], r = intervals[i][1];
-        if (l > nr && i == 0) {
-            answer.push_back({nl, nr});
-        } else if (r < nl && i == intervals.size() - 1) {
-            answer.push_back({nl, nr});
-        } else if (r < nl || l > nr) {
-            answer.push_back({l, r});
-        } else {
-            if (!flag) {
-                answer.push_back({nl, nr});
-                flag = true;
-            }
-            answer.back()[0] = min(answer.back()[0], l);
-            answer.back()[1] = max(answer.back()[1], r);
+vector<string> fullJustify(vector<string> &words, int maxWidth) {
+    vector<string> answer;
+    int right = 0, n = words.size();
+    while (true) {
+        int left = right, sumLen = 0;
+        while (right < n && sumLen + words[right].length() + right - left <= maxWidth) {
+            // now, the sumLen just have the max words length, maxWidth - sumLen is the number of blank
+            sumLen += words[right++].length();
         }
+
+        // in the last line
+        if (right == n) {
+            string s = join(words, left, right, " ");
+            answer.push_back(s + blank(maxWidth - s.size()));
+            break;
+        }
+
+        int wordsNum = right - left, blanksNum = maxWidth - sumLen;
+
+        // in the non-last line and just have one word in this line
+        if (wordsNum == 1) {
+            answer.push_back(words[left] + blank(blanksNum));
+            continue;
+        }
+
+        // in the non-last line, and have at least two words
+        // minimum blanks number between words
+        int avgBlanksNum = blanksNum / (wordsNum - 1);
+        // the count of space which need added blank
+        int extraSpacesNum = blanksNum % (wordsNum - 1);
+
+        // add extra blanks
+        string s1 = join(words, left, left + extraSpacesNum + 1, blank(avgBlanksNum + 1));
+        // add average blanks
+        string s2 = join(words, left + extraSpacesNum + 1, right, blank(avgBlanksNum));
+        // add blanks between s1 and s2
+        answer.push_back(s1 + blank(avgBlanksNum) + s2);
     }
     return answer;
 }
 
 int main() {
-
 }
 
 
