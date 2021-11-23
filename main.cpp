@@ -18,40 +18,50 @@
 
 using namespace std;
 
-string simplifyPath(string path) {
-    vector<string> stack;
-    int i = 0, n = path.size();
-    while (i < n) {
-        if (path[i] == '/') {
-            i++;
-            continue;
-        }
-
-        string s;
-        for (; i < n && path[i] != '/'; i++) {
-            s += path[i];
-        }
-
-        if (s == ".") {
-            continue;
-        } else if (s == "..") {
-            if (stack.size() > 0) {
-                stack.pop_back();
-            }
-        } else {
-            stack.push_back(s);
-
+bool check(map<char, int> &s_cnt, map<char, int> &t_cnt) {
+    for (auto iter = s_cnt.begin(); iter != s_cnt.end(); iter++) {
+        if (iter->second > t_cnt[iter->first]) {
+            return false;
         }
     }
-
-    string answer;
-    for (int i = 0; i < stack.size(); i++) {
-        answer += "/" + stack[i];
-    }
-    return answer;
+    return true;
 }
 
+string minWindow(string s, string t) {
+    map<char, int> s_cnt, t_cnt;
+    for (int i = 0; i < t.size(); i++) {
+        t_cnt[s[i]]++;
+    }
+
+    int ans_l = -1, len = INT32_MAX;
+    for (int l = 0, r = 0; r < s.size(); r++) {
+        if (t_cnt.count(s[r]) > 0) {
+            s_cnt[s[r]]++;
+        }
+
+        // if find the sub str of s satisfy to t, then consider to move the l
+        while (check(s_cnt, t_cnt) && l <= r) {
+            // store the minimum answer
+            if (r - l + 1 < len) {
+                len = r - l + 1;
+                ans_l = l;
+            }
+
+            // subtract the counter when you need to move the l
+            if (t_cnt.count(s[l]) > 0) {
+                s_cnt[s[l]]--;
+            }
+            // move the l
+            l++;
+        }
+    }
+    return ans_l == -1 ? string() : s.substr(ans_l, len);
+}
+
+
 int main() {
+    string s = "123456";
+    cout << s.substr(1,2);
 }
 
 

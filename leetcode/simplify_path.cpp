@@ -26,7 +26,6 @@ public:
                 }
             } else {
                 stack.push_back(s);
-
             }
         }
 
