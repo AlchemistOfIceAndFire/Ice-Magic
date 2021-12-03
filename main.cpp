@@ -28,16 +28,25 @@
 
 using namespace std;
 
-int largestRectangleArea(vector<int> &heights) {
-    int answer = 0, n = heights.size();
-    stack<int> mono_stack;
+ListNode *partition(ListNode *head, int x) {
+    ListNode *left = new ListNode(), *left_head = left, *right = new ListNode(), *right_head = right;
 
-    vector<int> _heights = {0};
-    _heights.push_back(heights);
+    while (head != nullptr) {
+        if (head->val < x) {
+            left->next = head;
+            left = left->next;
+        } else {
+            right->next = head;
+            right = right->next;
+        }
+        head = head->next;
+    }
 
-    heights.push_back({0});
-
+    right->next = nullptr;
+    left->next = right_head->next;
+    return left_head->next;
 }
+
 
 int main() {
 //Input:
@@ -47,7 +56,6 @@ int main() {
     string word = "SEE";
     vector<vector<bool>> visited(board.size(), vector<bool>(board[0].size()));
     vector<char> path;
-    cout << dfs(board, visited, word, path, 0, 0);
 
 // 'ABCCED'
 }

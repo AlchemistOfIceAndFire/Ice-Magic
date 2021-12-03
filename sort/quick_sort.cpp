@@ -7,10 +7,10 @@ int conquer(vector<int> &nums, int l, int r) {
     r--;
 
     while (l < r) {
-        while (l < r && nums[l] < nums[base]) {
+        while (l <= r && nums[l] < nums[base]) {
             l++;
         }
-        while (l < r && nums[r] > nums[base]) {
+        while (l <= r && nums[r] > nums[base]) {
             r--;
         }
         swap(nums[l], nums[r]);
