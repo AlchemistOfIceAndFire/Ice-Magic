@@ -28,36 +28,56 @@
 
 using namespace std;
 
-ListNode *partition(ListNode *head, int x) {
-    ListNode *left = new ListNode(), *left_head = left, *right = new ListNode(), *right_head = right;
-
-    while (head != nullptr) {
-        if (head->val < x) {
-            left->next = head;
-            left = left->next;
-        } else {
-            right->next = head;
-            right = right->next;
-        }
-        head = head->next;
+TreeNode *clone(TreeNode *node) {
+    if (node == nullptr) {
+        return node;
     }
-
-    right->next = nullptr;
-    left->next = right_head->next;
-    return left_head->next;
+    return new TreeNode(node->val, node->left, node->right);
 }
 
+vector<TreeNode *> generateTrees(int n) {
+    vector<TreeNode *> answer;
+    if (n == 0) {
+        return answer;
+    }
+
+    answer.push_back(nullptr);
+    for (int i = 1; i <= n; i++) {
+        vector<TreeNode *> nodes;
+        for (auto &exist: answer) {
+            TreeNode *node = new TreeNode(i);
+            node->left = exist;
+            nodes.push_back(node);
+
+            for (int j = 0; j <= n; j++) {
+                node = clone(exist);
+                TreeNode *_node = node;
+
+                for (int k = 0; k < j; k++) {
+                    if (_node == nullptr) {
+                        break;
+                    }
+                    _node = _node->right;
+                }
+
+                if (_node == nullptr) {
+                    break;
+                }
+
+                TreeNode *r_node = _node->right;
+                TreeNode *insert = new TreeNode(i, r_node, nullptr);
+                _node->right = insert;
+                nodes.push_back(node);
+            }
+        }
+        answer = nodes;
+    }
+
+    return answer;
+}
 
 int main() {
-//Input:
-    vector<vector<char>> board = {{'A', 'B', 'C', 'E'},
-                                  {'S', 'F', 'C', 'S'},
-                                  {'A', 'D', 'E', 'E'}};
-    string word = "SEE";
-    vector<vector<bool>> visited(board.size(), vector<bool>(board[0].size()));
-    vector<char> path;
 
-// 'ABCCED'
 }
 
 
