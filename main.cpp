@@ -2,15 +2,6 @@
 // Created by huanyan on 2021/8/10.
 //
 
-/*
- *
- * if match:
- *    path.push
- *    visited = true
- * else:
- *    return
- *
- */
 
 #include <iostream>
 #include <vector>
@@ -26,55 +17,82 @@
 #include <string.h>
 #include <bitset>
 
+/*
+ *  Input: preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]
+ *  Output: [3,9,20,null,null,15,7]
+ *
+ *  root = 3
+ *  left = [9]
+ *  right = [15 20 7]
+ *
+ *
+ *
+ */
+
+
 using namespace std;
 
-TreeNode *clone(TreeNode *node) {
-    if (node == nullptr) {
-        return node;
+class Solution {
+private:
+    int id = -1;
+    map<string, int> ids;
+    map<int, vector<int>> &dict;
+public:
+    int generateId(string &word) {
+        if (ids.count(word)) {
+            return ids[word];
+        }
+        ids[word] = ++id;
+        return id;
     }
-    return new TreeNode(node->val, node->left, node->right);
-}
 
-vector<TreeNode *> generateTrees(int n) {
-    vector<TreeNode *> answer;
-    if (n == 0) {
-        return answer;
+    void generateDict(string &word) {
+        generateId(word);
+        int org_id = ids[word];
+        for (char &it: word) {
+            char tmp = it;
+            it = '*';
+            int sub_id = generateId(word);
+            dict[org_id].push_back(sub_id);
+            dict[sub_id].push_back(org_id);
+            it = tmp;
+        }
     }
 
-    answer.push_back(nullptr);
-    for (int i = 1; i <= n; i++) {
-        vector<TreeNode *> nodes;
-        for (auto &exist: answer) {
-            TreeNode *node = new TreeNode(i);
-            node->left = exist;
-            nodes.push_back(node);
+    int ladderLength(string beginWord, string endWord, vector<string> &wordList) {
+        generateDict(beginWord);
+        for (int i = 0; i < wordList.size(); i++) {
+            generateDict(wordList[i]);
+        }
 
-            for (int j = 0; j <= n; j++) {
-                node = clone(exist);
-                TreeNode *_node = node;
+        // this dp vector means transfer beginWord to array id need how many steps
+        vector<int> dp(id + 1, -1);
+        dp[generateId(beginWord)] = 0;
 
-                for (int k = 0; k < j; k++) {
-                    if (_node == nullptr) {
-                        break;
-                    }
-                    _node = _node->right;
+        // this queue means current we can transfered words
+        queue<int> q_id;
+        q_id.push(generateId(beginWord));
+
+        while (!q_id.empty()) {
+            int cur_id = q_id.front();
+            q_id.pop();
+
+            if (cur_id == generateId(endWord)) {
+                return dp[cur_id] / 2 + 1;
+            }
+
+            vector<int> nexts = dict[cur_id];
+            for (int i = 0; i < nexts.size(); i++) {
+                if (dp[nexts[i] == -1]) {
+                    continue;
                 }
-
-                if (_node == nullptr) {
-                    break;
-                }
-
-                TreeNode *r_node = _node->right;
-                TreeNode *insert = new TreeNode(i, r_node, nullptr);
-                _node->right = insert;
-                nodes.push_back(node);
+                dp[nexts[i]] = dp[cur_id] + 1;
+                q_id.push(nexts[i]);
             }
         }
-        answer = nodes;
+        return 0;
     }
-
-    return answer;
-}
+};
 
 int main() {
 
